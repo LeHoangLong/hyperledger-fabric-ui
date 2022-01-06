@@ -4,22 +4,16 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { HashRouter, BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ipcMain } from 'electron'
+import { ipcRenderer } from 'electron'
 
 ReactDOM.render(
   <React.StrictMode>
-    <HashRouter>
-      <Routes>
-        <Route path="/">
-          <App/>
-        </Route>
-      </Routes>
-    </HashRouter>
+    <App/>
   </React.StrictMode>,
   document.getElementById('root')
 );
 
-ipcMain.on('route', (event, arg) => {
+ipcRenderer.on('route', (event, arg) => {
   console.log('arg') // prints "ping"
   console.log(arg) // prints "ping"
 })
