@@ -1,5 +1,3 @@
-'use strict';
-
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
@@ -756,7 +754,4 @@ function buildConfig(target, entry, generateMain) {
   };
 }
 
-const mainConfig = buildConfig('electron-main', path.join(appPath, 'src/main/index.ts'), false)
-const renderConfig = buildConfig('electron-renderer', path.join(appPath, 'src/renderer/index.tsx'), true)
-
-module.exports = [mainConfig, renderConfig]
+module.exports = buildConfig

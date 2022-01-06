@@ -1,5 +1,6 @@
 import path from 'path'
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
+import { Channels } from '../common/channels';
 
 const isDev = require('electron-is-dev');
 const { resolve } = require('path/posix');
@@ -18,7 +19,11 @@ function createWindow() {
 
   // and load the index.html of the app.
   // win.loadFile("index.html");
-  win.loadURL(`file://${path.join(__dirname, '../../../index.html')}`);
+  win.loadURL(
+    isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, '../../../index.html')}`
+  );
 
   // Open the DevTools.
   setMainMenu()
@@ -27,19 +32,31 @@ function createWindow() {
   }
 }
 
+function sendMenuClickEvent(win: BrowserWindow, menu: string) {
+  win.webContents.send(Channels.ROUTE, menu)
+}
+
 function setMainMenu() {
   const template = [
     {
-      label: 'Filter',
-      submenu: [
-        {
-          label: 'Hello',
-          accelerator: 'Shift+CmdOrCtrl+H',
-          async click() {
-            win.webContents.send('route', 'Hello 12345')
-          }
-        }
-      ]
+      label: 'Certificate Authority',
+      async click() {
+        sendMenuClickEvent(win, '/ca')
+      },
+    },
+    {
+      label: 'Admin',
+      accelerator: 'CmdOrCtrl+Shift+A',
+      async click() {
+        sendMenuClickEvent(win, '/admin')
+      },
+    },
+    {
+      label: 'Chaincode',
+      accelerator: 'CmdOrCtrl+Shift+C',
+      async click() {
+        sendMenuClickEvent(win, '/chaincode')
+      },
     }
   ];
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
