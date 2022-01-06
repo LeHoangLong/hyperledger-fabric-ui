@@ -27,7 +27,7 @@ const ForkTsCheckerWebpackPlugin =
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const createEnvironmentHash = require('./config/webpack/persistentCache/createEnvironmentHash');
-const { appIndexJs } = require('./config/paths');
+const { appIndexJs, appPath } = require('./config/paths');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -756,8 +756,7 @@ function buildConfig(target, entry, generateMain) {
   };
 }
 
-
-const mainConfig = buildConfig('electron-main', '/home/long/hyperledger/ui/src/main/index.ts', false)
-const renderConfig = buildConfig('electron-renderer', '/home/long/hyperledger/ui/src/index.tsx', true)
+const mainConfig = buildConfig('electron-main', path.join(appPath, 'src/main/index.ts'), false)
+const renderConfig = buildConfig('electron-renderer', path.join(appPath, 'src/renderer/index.tsx'), true)
 
 module.exports = [mainConfig, renderConfig]
