@@ -5,6 +5,8 @@ import { Result } from "../../common/models/Result";
 
 export const defaultMainErrorHandler = async (fn: () => Promise<Result<any>>) : Promise<any> => {
     let result = await fn()
+    console.log('result')
+    console.log(result)
     if (result.errorCode === ErrorCode.SUCCESS) {
         return result.data
     } else if (result.errorCode === ErrorCode.NOT_FOUND) {

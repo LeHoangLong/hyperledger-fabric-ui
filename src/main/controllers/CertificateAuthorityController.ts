@@ -15,6 +15,21 @@ export class CertificateAuthorityController {
         return this.repository!.getCertificates()
     }
 
+    async getSelectedCertificateAuthority() : Promise<CertificateAuthority> {
+        let selectedCa = await this.repository!.getSelectedCertificateAuthority()
+        if (selectedCa === undefined) {
+            throw new NotFound('No CA selected')
+        } else {
+            return selectedCa
+        }
+    }
+
+    async setSelectedCertificateAuthority(name: string) : Promise<void> {
+        if (!(await this.repository!.setSelectedCertificateAuthority(name))) {
+            throw new NotFound(`No CA with name ${name} found`)            
+        }
+    }
+
     async addCertificateAuthority(arg: {
         name: string,
         url: string,

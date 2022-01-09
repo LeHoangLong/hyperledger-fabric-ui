@@ -26,4 +26,19 @@ export class CertificateAuthorityService {
             return await ipcRenderer.invoke(Channels.GET_CERTIFICATE_AUTHORITY) as Result<CertificateAuthority[]>
         })
     }
+
+    async getSelectedCertificates() : Promise<CertificateAuthority> {
+        return defaultMainErrorHandler(async () => {
+            return await ipcRenderer.invoke(Channels.GET_SELECTED_CERTIFICATE_AUTHORITY) as Result<CertificateAuthority>
+        })
+    }
+
+    async setSelectedCertificates(name: string) : Promise<CertificateAuthority> {
+        return defaultMainErrorHandler(async () => {
+            return await ipcRenderer.invoke(Channels.SET_SELECTED_CERTIFICATE_AUTHORITY, {
+                name
+            }) as Result<CertificateAuthority>
+        })
+    }
+    
 }

@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-modal';
+import { NotFound } from '../../common/exceptions/NotFound';
 import myContainer from '../container';
 import { useAppDispatch, useAppSelector } from '../hook';
 import { Status } from '../models/Status';
-import { setCertificates } from '../reducers/CertificateAuthorityReducer';
+import { setCertificates, setSelectedCertificateName } from '../reducers/CertificateAuthorityReducer';
 import { CertificateAuthorityService } from '../services/CertificateAuthorityService';
 import { Symbols } from '../symbols';
+import fontawesome from '@fortawesome/fontawesome'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faTrash } from '@fortawesome/fontawesome-free-solid'
+import { CertificateAuthority } from '../../common/models/CertificateAuthority';
 
 export interface CertificateAuthorityPageProps {
 
 }
+
+fontawesome.library.add(faCheck, faTrash);
 
 let certificateAuthorityService = myContainer.get<CertificateAuthorityService>(Symbols.CERTIFICATE_AUTHORITY_SERVICE)
 
@@ -18,18 +25,31 @@ export const CertificateAuthorityPage = (props: CertificateAuthorityPageProps) =
     let [certificateName, setCertificateName] = useState('')
     let [certificateUrl, setCertificateUrl] = useState('')
     let [pemFilePath, setPemFilePath] = useState('')
+    let [modalErrorString, setModalErrorString] = useState('')
     let [errorString, setErrorString] = useState('')
 
     let certificateAuthorities = useAppSelector(state => state.certificateAuthorities.certificates)
     let certificateAuthoritiesStatus = useAppSelector(state => state.certificateAuthorities.status)
+    let selectedCertificateName = useAppSelector(state => state.certificateAuthorities.selectedCertificateName)
 
     let dispatch = useAppDispatch()
 
     useEffect(() => {
         const init = async () => {
             let certificates = await certificateAuthorityService.getCertificates()
-            console.log(certificates)
             dispatch(setCertificates(certificates))
+
+            try {
+                let selectedCertificateName =  await certificateAuthorityService.getSelectedCertificates()
+                dispatch(setSelectedCertificateName(selectedCertificateName.name))
+            } catch (exception) {
+                if (exception instanceof NotFound) {
+                    // Do nothing
+                } else {
+                    console.log('set error')
+                    setModalErrorString((exception as Error).message)
+                }
+            }
         }
 
         if (certificateAuthoritiesStatus === Status.INIT) {
@@ -57,18 +77,39 @@ export const CertificateAuthorityPage = (props: CertificateAuthorityPageProps) =
             dispatch(setCertificates([...certificateAuthorities, newCa]))
             setShowModal(false)
         } catch (exception) {
-            let error = exception as Error        
-            setErrorString(error.message)    
+            let error = exception as Error    
+            console.log('set error')    
+            setModalErrorString(error.message)    
+        }
+    }
+
+    async function onCaClicked(ca: CertificateAuthority) {
+        try {
+            let selected = await certificateAuthorityService.setSelectedCertificates(ca.name)
+            dispatch(setSelectedCertificateName(selected.name))
+        } catch (exception) {
+            setErrorString((exception as Error).message)
         }
     }
 
     function displayCertificateAuthorities() : React.ReactNode[] {
         let ret: React.ReactNode[] = []
         for (let i  = 0; i < certificateAuthorities.length; i++) {
+            let isSelected = certificateAuthorities[i].name === selectedCertificateName
             ret.push(
                 <article key={ certificateAuthorities[i].name }>
-                    <h6> { certificateAuthorities[i].name } </h6>
-                    <p> { certificateAuthorities[i].url } </p>
+                    <button onClick={() => onCaClicked(certificateAuthorities[i]) }>
+                        {(() => {
+                            if (isSelected) {
+                                return <FontAwesomeIcon icon={["fas", "check"]} />
+                            }
+                        })()}
+                        <h6> { certificateAuthorities[i].name } </h6>
+                        <p> { certificateAuthorities[i].url } </p>
+                    </button>
+                    <button>
+                        <FontAwesomeIcon icon="trash"></FontAwesomeIcon>
+                    </button>
                 </article>
             )
         }
@@ -87,6 +128,7 @@ export const CertificateAuthorityPage = (props: CertificateAuthorityPageProps) =
         <section id='ca-page'>
             <h2>Certificate authorities</h2>
             { displayCertificateAuthorities() }
+            <p>{ errorString }</p>
             <button onClick={() => setShowModal(true)}>Add certificate</button>
             <Modal isOpen={showModal}>
                 <button onClick={() => setShowModal(false)}>&times;</button>
@@ -109,7 +151,7 @@ export const CertificateAuthorityPage = (props: CertificateAuthorityPageProps) =
                     </div>
                     <button>Ok</button>
                 </form>
-                <p>{ errorString }</p>
+                <p>{ modalErrorString }</p>
             </Modal>
         </section>
     )

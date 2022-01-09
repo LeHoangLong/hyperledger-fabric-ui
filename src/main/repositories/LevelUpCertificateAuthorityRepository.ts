@@ -27,8 +27,6 @@ export class LevelUpCertificateAuthorityRepository implements ICertificateAuthor
             await this.driver!.put(`${Tables.CERTIFICATE_AUTHORITY}/${arg.name}`, JSON.stringify(certificateAuthority))
             let keys = await this.getCertificateAuthorityKeys()
             keys = [...keys, arg.name]
-            console.log('keys')
-            console.log(keys)
             await this.driver?.put(`${Tables.CERTIFICATE_AUTHORITY}_keys`, JSON.stringify(keys))
             return certificateAuthority
         }
@@ -71,5 +69,25 @@ export class LevelUpCertificateAuthorityRepository implements ICertificateAuthor
             }
         }
         return ret
+    }
+
+
+    async setSelectedCertificateAuthority(name: string) : Promise<boolean> {
+        let certificate = await this.getCertificate(name)
+        if (certificate !== undefined) {
+            await this.driver!.put(`${Tables.CERTIFICATE_AUTHORITY}_selected`, name)
+            return true
+        } else {
+            return false
+        }
+    }
+
+    async getSelectedCertificateAuthority() : Promise<CertificateAuthority | undefined> {
+        try {
+            let selectedName = await this.driver!.get(`${Tables.CERTIFICATE_AUTHORITY}_selected`)
+            return this.getCertificate(selectedName)
+        } catch (exception) {
+            return undefined
+        }
     }
 }

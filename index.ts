@@ -23,7 +23,7 @@ async function testGateway() {
             const caName = 'ca-org1'
             const caClient = new FabricCAServices(caUrl, { 
                 trustedRoots: [caCert], 
-                verify: false 
+                verify: false, 
             }, caName);
             const enrollment = await caClient.enroll({ 
                 enrollmentID: adminUserId, 
