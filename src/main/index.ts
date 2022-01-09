@@ -1,6 +1,7 @@
 import path from 'path'
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import { Channels } from '../common/channels';
+import {} from './routers/CertificateAuthorityRoute'
 
 const isDev = require('electron-is-dev');
 const { resolve } = require('path/posix');

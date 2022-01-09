@@ -339,13 +339,6 @@ function buildConfig(target, entry, generateMain) {
     module: {
       strictExportPresence: true,
       rules: [
-        // Handle node_modules packages that contain sourcemaps
-        shouldUseSourceMap && {
-          enforce: 'pre',
-          exclude: /@babel(?:\/|\\{1,2})runtime/,
-          test: /\.(js|mjs|jsx|ts|tsx|css)$/,
-          loader: require.resolve('source-map-loader'),
-        },
         {
           // "oneOf" will traverse all following loaders until one will
           // match the requirements. When no loader matches it will fall
@@ -563,6 +556,7 @@ function buildConfig(target, entry, generateMain) {
       ].filter(Boolean),
     },
     plugins: [
+      new webpack.ExternalsPlugin("commonjs", ["leveldown"]),
       // Generates an `index.html` file with the <script> injected.
       generateMain && new HtmlWebpackPlugin(
         Object.assign(

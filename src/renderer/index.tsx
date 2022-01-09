@@ -6,18 +6,22 @@ import { HashRouter, Routes, Route } from 'react-router-dom';
 import { ipcRenderer } from 'electron'
 import { Channels } from '../common/channels';
 import { CertificateAuthorityPage } from './pages/CertificateAuthorityPage';
+import { Provider } from 'react-redux'
+import store from './reducers/RootReducer'
 
 ReactDOM.render(
   <React.StrictMode>
-    <HashRouter>
-      <Routes>
-        <Route path="/admin" element={<h1>Hello 1</h1>}>
-        </Route>
-        <Route path='/ca' element={ <CertificateAuthorityPage/> }></Route>
-        <Route path="/*" element={<h1>Hello 2</h1>}>
-        </Route>
-      </Routes>
-    </HashRouter>
+    <Provider store={ store }>
+      <HashRouter>
+        <Routes>
+          <Route path="/admin" element={<h1>Hello 1</h1>}>
+          </Route>
+          <Route path='/ca' element={ <CertificateAuthorityPage/> }></Route>
+          <Route path="/*" element={<h1>Hello 2</h1>}>
+          </Route>
+        </Routes>
+      </HashRouter>
+    </Provider>
   </React.StrictMode>,
   document.getElementById('root')
 );

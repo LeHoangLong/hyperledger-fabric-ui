@@ -1,0 +1,3 @@
+export const Tables = {
+    CERTIFICATE_AUTHORITY: 'CERTIFICATE_AUTHORITY',
+}

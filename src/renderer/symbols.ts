@@ -1,0 +1,3 @@
+export const Symbols = {
+    CERTIFICATE_AUTHORITY_SERVICE: Symbol.for('CERTIFICATE_AUTHORITY_SERVICE'),
+}
