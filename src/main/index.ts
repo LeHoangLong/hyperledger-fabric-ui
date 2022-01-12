@@ -2,6 +2,7 @@ import path from 'path'
 import { app, BrowserWindow, Menu, ipcMain } from 'electron'
 import { Channels } from '../common/channels';
 import {} from './routers/CertificateAuthorityRoute'
+import {} from './routers/ClientConfigRoute'
 
 const isDev = require('electron-is-dev');
 const { resolve } = require('path/posix');
@@ -43,6 +44,12 @@ function setMainMenu() {
       label: 'Certificate Authority',
       async click() {
         sendMenuClickEvent(win, '/ca')
+      },
+    },
+    {
+      label: 'Client configuration',
+      async click() {
+        sendMenuClickEvent(win, '/cc')
       },
     },
     {

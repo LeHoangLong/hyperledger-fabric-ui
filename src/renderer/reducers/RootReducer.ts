@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import CertificateAuthorityReducer from "./CertificateAuthorityReducer";
+import ClientConfigReducer from "./ClientConfigReducer";
 
 let store = configureStore({
     reducer: {
         certificateAuthorities: CertificateAuthorityReducer,
+        clientConfig: ClientConfigReducer,
     },
 })
 

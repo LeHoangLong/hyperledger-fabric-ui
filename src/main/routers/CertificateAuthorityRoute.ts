@@ -30,8 +30,6 @@ ipcMain.handle(Channels.GET_SELECTED_CERTIFICATE_AUTHORITY, async (event, arg) =
 
 ipcMain.handle(Channels.SET_SELECTED_CERTIFICATE_AUTHORITY, async (event, arg) => {
     let view = myContainer.get<CertificateAuthorityView>(Symbols.CERTIFICATE_AUTHORITY_VIEW)
-    console.log('arg')
-    console.log(arg)
     let result = await view.setSelectedCertificateAuthority(arg.name)
     return result
 })

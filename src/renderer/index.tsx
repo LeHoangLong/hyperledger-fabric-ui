@@ -8,6 +8,7 @@ import { Channels } from '../common/channels';
 import { CertificateAuthorityPage } from './pages/CertificateAuthorityPage';
 import { Provider } from 'react-redux'
 import store from './reducers/RootReducer'
+import { ClientConfigurationPage } from './pages/ClientConfigurationPage';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -16,6 +17,10 @@ ReactDOM.render(
         <Routes>
           <Route path="/admin" element={<h1>Hello 1</h1>}>
           </Route>
+
+          <Route path="/cc" element={ <ClientConfigurationPage></ClientConfigurationPage> }>
+          </Route>
+          
           <Route path='/ca' element={ <CertificateAuthorityPage/> }></Route>
           <Route path="/*" element={<h1>Hello 2</h1>}>
           </Route>

@@ -6,6 +6,8 @@ import { Result } from "../common/models/Result"
 export const defaultErrorHandler = async <T extends unknown>(fn: () => Promise<T>) : Promise<Result<T>> => {
     try {
         let ret = await fn()
+        console.log('typeof(ret) 2')
+        console.log(typeof(ret))
         return {
             data: ret,
             errorCode: ErrorCode.SUCCESS,
